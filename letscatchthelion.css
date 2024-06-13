@@ -1,0 +1,230 @@
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * LetsCatchTheLion implementation : © <Mathieu Chatrain> <mathieu.chatrain@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * letscatchthelion.css
+ *
+ * LetsCatchTheLion stylesheet
+ *
+ */
+
+/*
+    This is the CSS stylesheet of your game User Interface.
+    
+    Styles defined on this file will be applied to the HTML elements you define in your
+    HTML template (letscatchthelion_letscatchthelion.tpl), and to HTML elements you create dynamically
+    (in letscatchthelion.js).
+    
+    Usually, you are using CSS to:
+    
+    1°) define the overall layout of your game
+        (ex: place the board on the top left, place player's hand beside, place the deck on the right, ...).
+
+    2°) create your CSS-sprites:
+        All images of your games should be gathered into a small number of image files. Then, using
+        background-image and background-position CSS properties, you create HTML blocks that can 
+        display these images correctly (see example below).
+    
+    3°) ... anything else:
+        It is really easy to add and remove CSS classes dynamically from your Javascript with
+        dojo.addClass and dojo.removeClass. It is also easy to check if an element has a class
+        (dojo.hasClass) or to get all elements with a specific class (dojo.query). This is why,
+        very often, using CSS classes for the logic of your user interface allow you to do complex
+        thing easily.
+        
+        
+     Note: on the production platform, this file will be compressed and comments will be removed.
+           Consequently, don't hesitate to put as many comments as necessary.
+*/
+
+
+/* Note: you must not use any @import directive */
+
+
+/********* You can start writing your CSS below this line: **********/
+
+
+/*
+    Example of CSS sprites (a black token and a white token, 20x20px each, embedded in the same "tokens.png" 40x20px image):
+
+    .white_token {
+        background-image: url('img/tokens.png');
+        background-position: 0px 0px;
+    }
+    .black_token {
+        background-image: url('img/tokens.png');
+        background-position: -20px 0px;
+    }
+    .token {
+        width: 20px;
+        height: 20px;
+        background-repeat: none;
+    }
+*/
+
+
+#global {
+    width: 700px;
+    height: 620px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+      
+}
+
+#plateau {
+    width: 370px;
+    height: 514px;
+    background-image: url('img/board1.jpg');
+    top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    filter: drop-shadow(3px 3px 4px black);
+    -webkit-filter: drop-shadow(3px 3px 4px black);
+    
+    
+}
+
+.plateaubleu {
+    background-image: url('img/board2.jpg') !important;
+}
+
+#board {
+    width: 300px;
+    height: 400px;
+    left: 35px;
+    top: 57px;
+    position: absolute;
+    
+    
+}
+
+#reserve2 {
+    width: 200px;
+    height: 300px;
+    position: absolute;
+    left: -50px;
+    top: 50px;
+    
+}
+
+#reserve1 {
+    width: 200px;
+    height: 300px;
+    position: absolute;
+    left : 550px;
+    top: 265px;
+    
+}
+
+.reserve2 {
+    left : 550px !important;
+    top: 265px !important;
+}
+
+.reserve1 {
+    left: -50px !important;
+    top: 50px !important;
+    
+}
+
+.square {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    
+}
+
+.squarereserve1 {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    
+    
+}
+
+.squarereserve2 {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    
+}
+
+.token {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    background-image: url('img/tokens.png');
+    /*filter: drop-shadow(2px 2px 3px black);
+    -webkit-filter: drop-shadow(2px 2px 3px black);*/
+    
+}
+
+
+.tokencolor_008c00 { background-position-y: 0px;   }
+.tokencolor_0000ff { background-position-y: -100px;   }
+.tokentype_1 {background-position-x: 0px;}
+.tokentype_2 {background-position-x: -100px;}
+.tokentype_3 {background-position-x: -200px;}
+.tokentype_4 {background-position-x: -300px;}
+.tokentype_5 {background-position-x: -400px;}
+
+.tokencolor_008c00.rotate180deg { background-position-y: -100px !important;   }
+.tokencolor_0000ff.rotate180deg { background-position-y: 0px !important;   }
+
+.colorgreen {
+    background-color: rgba(0, 140, 0, 0.4);
+    
+}
+
+.colorblue {
+    background-color: rgb(0, 0, 255, 0.35);
+    
+}
+
+.selectable {
+    
+    cursor: pointer;
+    pointer-events: auto ;
+}
+
+
+.selected {
+    background-color: rgb(128, 128, 128, 0.7);
+    pointer-events: auto ;
+}
+
+
+.lastmove {
+    background-color: rgba(255, 255, 0, 0.5) !important;
+    pointer-events: auto ;
+    transition: background-color 0.5s ease-in-out 0.5s;
+}
+
+
+/*.rotate180deg {
+	
+    transform: rotate( 180deg );
+    filter: drop-shadow(-1px -1px 2px black) !important;
+    -webkit-filter: drop-shadow(-1px -1px 2px black) !important;
+   
+}*/
+
+.square.selectable .token { /* je selectionne les div token qui sont dans une div square selectionnable*/
+    pointer-events: none !important; /* ils sont "transparent" et le square du dessous est cliquable*/
+    
+    }
+
+.square.selectable2 .token { /* je selectionne les div token qui sont dans une div square selectionnable*/
+        pointer-events: none !important; /* ils sont "transparent" et le square du dessous est cliquable*/
+        
+        }
+
+
+
