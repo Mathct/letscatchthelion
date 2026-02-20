@@ -16,14 +16,15 @@
   * In this PHP file, you are going to defines the rules of the game.
   *
   */
- 
 
-
-require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
-
+use Bga\GameFramework\Table;
+use Bga\GameFramework\VisibleSystemException;
 
 class LetsCatchTheLion extends Table
 {
+    public array $types;
+    public array $coords;
+
 	function __construct( )
 	{
         // Your global variables labels:
@@ -38,17 +39,8 @@ class LetsCatchTheLion extends Table
             //    "my_first_global_variable" => 10,
             //    "my_second_global_variable" => 11,
             //      ...
-            //    "my_first_game_variant" => 100,
-            //    "my_second_game_variant" => 101,
-            //      ...
         ) );        
 	}
-	
-    protected function getGameName( )
-    {
-		// Used for translations and stuff. Please do not modify.
-        return "letscatchthelion";
-    }	
 
     /*
         setupNewGame:
@@ -154,6 +146,7 @@ class LetsCatchTheLion extends Table
         $this->activeNextPlayer();
 
         /************ End of the game initialization *****/
+        return 10;
     }
 
     /*
@@ -168,8 +161,6 @@ class LetsCatchTheLion extends Table
     protected function getAllDatas()
     {
         $result = array();
-    
-        $current_player_id = self::getCurrentPlayerId();    // !! We must only return informations visible by this player !!
     
         // Get information about players
         // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
@@ -436,7 +427,7 @@ class LetsCatchTheLion extends Table
         $player_id = self::getActivePlayerId();
         self::DbQuery( "UPDATE player set player_score = 1 WHERE player_id != {$player_id}" );
                         $newScore = self::getCollectionFromDb( "SELECT player_id, player_score FROM player", true );
-                        $this->notifyAllPlayers( "forfeit", clienttranslate('${player_name} forfeits'),
+                        $this->bga->notify->all( "forfeit", clienttranslate('${player_name} forfeits'),
                         array(
                
                         'score' => $newScore,
@@ -504,7 +495,7 @@ class LetsCatchTheLion extends Table
                     
                     self::DbQuery( "UPDATE player set player_lion = 1 WHERE player_color = '{$playeractive_color}'" );
                         /*$newScore = self::getCollectionFromDb( "SELECT player_id, player_score FROM player", true );
-                        $this->notifyAllPlayers( "score", '',
+                        $this->bga->notify->all( "score", '',
                         array(
                
                         'score' => $newScore,
@@ -521,7 +512,7 @@ class LetsCatchTheLion extends Table
                     
                         self::DbQuery( "UPDATE player set player_lion = 1 WHERE player_color = '{$playeractive_color}'" );
                         /*$newScore = self::getCollectionFromDb( "SELECT player_id, player_score FROM player", true );
-                        $this->notifyAllPlayers( "score", '',
+                        $this->bga->notify->all( "score", '',
                         array(
                
                         'score' => $newScore,
@@ -538,7 +529,7 @@ class LetsCatchTheLion extends Table
                     $recuptypeafter = 5;
                     self::DbQuery( "UPDATE board set board_player = {$recupplayer}, board_type = {$recuptypeafter} WHERE board_x = {$xpossquare} AND board_y = {$ypossquare}" );
                     self::DbQuery( "UPDATE board set board_player = {$null}, board_type = {$null} WHERE board_x = {$xpostoken} AND board_y = {$ypostoken}" );
-                    $this->notifyAllPlayers( "move", clienttranslate('${player_name} moves the chick to ${coord} and turns it into a hen'),
+                    $this->bga->notify->all( "move", clienttranslate('${player_name} moves the chick to ${coord} and turns it into a hen'),
                     array(
                         'i18n' => array( 'coord' ),
                         'mobile' => "token_".$xpostoken."_".$ypostoken,
@@ -557,7 +548,7 @@ class LetsCatchTheLion extends Table
                     $recuptypeafter = $recuptype;
                     self::DbQuery( "UPDATE board set board_player = {$recupplayer}, board_type = {$recuptypeafter} WHERE board_x = {$xpossquare} AND board_y = {$ypossquare}" );
                     self::DbQuery( "UPDATE board set board_player = {$null}, board_type = {$null} WHERE board_x = {$xpostoken} AND board_y = {$ypostoken}" );
-                    $this->notifyAllPlayers( "move", clienttranslate('${player_name} moves ${type} to ${coord}'),
+                    $this->bga->notify->all( "move", clienttranslate('${player_name} moves ${type} to ${coord}'),
                         array(
                         'i18n' => array( 'type', 'coord' ),
                         'mobile' => "token_".$xpostoken."_".$ypostoken,
@@ -587,7 +578,7 @@ class LetsCatchTheLion extends Table
                     
                     self::DbQuery( "UPDATE player set player_lion = 1 WHERE player_color = '{$playeractive_color}'" );
                         /*$newScore = self::getCollectionFromDb( "SELECT player_id, player_score FROM player", true );
-                        $this->notifyAllPlayers( "score", '',
+                        $this->bga->notify->all( "score", '',
                         array(
                
                         'score' => $newScore,
@@ -601,7 +592,7 @@ class LetsCatchTheLion extends Table
                     
                     self::DbQuery( "UPDATE player set player_lion = 1 WHERE player_color = '{$playeractive_color}'" );
                         /*$newScore = self::getCollectionFromDb( "SELECT player_id, player_score FROM player", true );
-                        $this->notifyAllPlayers( "score", '',
+                        $this->bga->notify->all( "score", '',
                         array(
                
                         'score' => $newScore,
@@ -643,7 +634,7 @@ class LetsCatchTheLion extends Table
                     {
                         self::DbQuery( "UPDATE player set player_score = 1 WHERE player_color = '{$playeractive_color}'" );
                         $newScore = self::getCollectionFromDb( "SELECT player_id, player_score FROM player", true );
-                        $this->notifyAllPlayers( "score", '',
+                        $this->bga->notify->all( "score", '',
                         array(
                
                         'score' => $newScore,
@@ -660,7 +651,7 @@ class LetsCatchTheLion extends Table
                     $a = $nbrelignereserve + 1;
                     self::DbQuery( "INSERT reserve1 (reserve_x, reserve_type) VALUE ({$a}, {$typekillafter})");
                     $nbrelignereserve1 = self::getUniqueValueFromDB("SELECT count(*) FROM reserve1");
-                    $this->notifyAllPlayers( "move", clienttranslate('${player_name} moves the chick to ${coord}, turns it into a hen and captures ${captured}'),
+                    $this->bga->notify->all( "move", clienttranslate('${player_name} moves the chick to ${coord}, turns it into a hen and captures ${captured}'),
                     array(
                         'i18n' => array( 'coord', 'captured' ),
                         'mobile' => "token_".$xpostoken."_".$ypostoken,
@@ -686,7 +677,7 @@ class LetsCatchTheLion extends Table
                     $a = $nbrelignereserve + 1;
                     self::DbQuery( "INSERT reserve2 (reserve_x, reserve_type) VALUE ({$a}, {$typekillafter})");
                     $nbrelignereserve2 = self::getUniqueValueFromDB("SELECT count(*) FROM reserve2");
-                    $this->notifyAllPlayers( "move", clienttranslate('${player_name} moves the chick to ${coord}, turns it into a hen and captures ${captured}'),
+                    $this->bga->notify->all( "move", clienttranslate('${player_name} moves the chick to ${coord}, turns it into a hen and captures ${captured}'),
                     array(
                         'i18n' => array( 'coord', 'captured' ),
                         'mobile' => "token_".$xpostoken."_".$ypostoken,
@@ -715,7 +706,7 @@ class LetsCatchTheLion extends Table
                     $a = $nbrelignereserve + 1;
                     self::DbQuery( "INSERT reserve1 (reserve_x, reserve_type) VALUE ({$a}, {$typekillafter})");
                     $nbrelignereserve1 = self::getUniqueValueFromDB("SELECT count(*) FROM reserve1");
-                    $this->notifyAllPlayers( "move", clienttranslate('${player_name} moves ${type} to ${coord} and captures ${captured}'),
+                    $this->bga->notify->all( "move", clienttranslate('${player_name} moves ${type} to ${coord} and captures ${captured}'),
                     array(
                         'i18n' => array( 'type', 'coord', 'captured' ),
                         'mobile' => "token_".$xpostoken."_".$ypostoken,
@@ -742,7 +733,7 @@ class LetsCatchTheLion extends Table
                     $a = $nbrelignereserve + 1;
                     self::DbQuery( "INSERT reserve2 (reserve_x, reserve_type) VALUE ({$a}, {$typekillafter})");
                     $nbrelignereserve2 = self::getUniqueValueFromDB("SELECT count(*) FROM reserve2");
-                    $this->notifyAllPlayers( "move", clienttranslate('${player_name} moves ${type} to ${coord} and captures ${captured}'),
+                    $this->bga->notify->all( "move", clienttranslate('${player_name} moves ${type} to ${coord} and captures ${captured}'),
                     array(
                         'i18n' => array( 'type', 'coord', 'captured' ),
                         'mobile' => "token_".$xpostoken."_".$ypostoken,
@@ -818,7 +809,7 @@ class LetsCatchTheLion extends Table
         
         }
 
-        $this->notifyAllPlayers( "movefromreserve", clienttranslate('${player_name} places ${type} to ${coord} from the reserve'),
+        $this->bga->notify->all( "movefromreserve", clienttranslate('${player_name} places ${type} to ${coord} from the reserve'),
                     array(
                         'i18n' => array( 'type', 'coord'),
                         'mobile' => $token_id,
@@ -1099,7 +1090,7 @@ class LetsCatchTheLion extends Table
          
         self::DbQuery( "UPDATE player set player_score = 1 WHERE player_id != '{$playeractive}'" );
                         $newScore = self::getCollectionFromDb( "SELECT player_id, player_score FROM player", true );
-                        $this->notifyAllPlayers( "score", clienttranslate('${player_name} saves the lion'),
+                        $this->bga->notify->all( "score", clienttranslate('${player_name} saves the lion'),
                         array(
                
                         'score' => $newScore,
@@ -1119,7 +1110,7 @@ class LetsCatchTheLion extends Table
 
             self::DbQuery( "UPDATE player set player_score = 1 WHERE player_id = '{$playeractive}'" );
                         $newScore = self::getCollectionFromDb( "SELECT player_id, player_score FROM player", true );
-                        $this->notifyAllPlayers( "score", clienttranslate('${player_name} saves the lion'),
+                        $this->bga->notify->all( "score", clienttranslate('${player_name} saves the lion'),
                         array(
                
                         'score' => $newScore,
@@ -1167,7 +1158,7 @@ class LetsCatchTheLion extends Table
         {
         self::DbQuery( "UPDATE player set player_score = 1 WHERE player_id != '{$player_id}'" );
                         $newScore = self::getCollectionFromDb( "SELECT player_id, player_score FROM player", true );
-                        $this->notifyAllPlayers( "score", clienttranslate('${player_name} is blocked'),
+                        $this->bga->notify->all( "score", clienttranslate('${player_name} is blocked'),
                         array(
                
                         'score' => $newScore,
@@ -1223,7 +1214,7 @@ class LetsCatchTheLion extends Table
             return;
         }
 
-        throw new feException( "Zombie mode not supported at this game state: ".$statename );
+        throw new VisibleSystemException( "Zombie mode not supported at this game state: ".$statename );
     }
     
 ///////////////////////////////////////////////////////////////////////////////////:

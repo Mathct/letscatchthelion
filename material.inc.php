@@ -19,20 +19,6 @@
  *
  */
 
-
-/*
-
-Example:
-
-$this->card_types = array(
-    1 => array( "card_name" => ...,
-                ...
-              )
-);
-
-*/
-
-
 $this->types = [
   1=>clienttranslate("the chick"),
   2=>clienttranslate("the elephant"),
